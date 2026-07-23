@@ -104,10 +104,10 @@
 
       <form id="checkoutForm" class="checkout-form">
         <label>الاسم الكامل</label>
-        <input type="text" required>
+        <input type="text" id="customerName" required>
 
         <label>رقم الهاتف</label>
-        <input type="tel" required>
+        <input type="tel" id="customerPhone" required>
 
         <div class="toggle-row">
           <span>هل لديك بريد إلكتروني؟</span>
@@ -134,15 +134,18 @@
           </div>
           <div>
             <label>المدينة</label>
-            <input type="text">
+            <input type="text" id="city">
           </div>
         </div>
 
         <label>العنوان</label>
-        <textarea rows="2"></textarea>
+        <textarea rows="2" id="address"></textarea>
 
         <label>طريقة الدفع</label>
         <select id="paymentMethod"></select>
+
+        <label>ملاحظات (اختياري)</label>
+        <textarea rows="2" id="orderNotes"></textarea>
 
         <button type="submit" class="confirm-btn">تأكيد الطلب</button>
       </form>

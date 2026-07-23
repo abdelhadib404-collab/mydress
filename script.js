@@ -236,12 +236,29 @@
     const mode = getMode();
     const delivery = getDeliveryPrice();
     const productsTotal = cart.reduce((sum, p) => sum + ((mode === 'rent' && p.rentPrice > 0) ? p.rentPrice : p.buyPrice), 0);
+
+    const productsHtml = cart.map(p => {
+      const price = (mode === 'rent' && p.rentPrice > 0) ? p.rentPrice : p.buyPrice;
+      return `<tr>
+        <td style="padding:10px 0;border-bottom:1px solid #ecdfd5;color:#2b2320">${p.name}</td>
+        <td style="padding:10px 0;border-bottom:1px solid #ecdfd5;color:#6b1e2f;font-weight:700;text-align:left">${price} دج</td>
+      </tr>`;
+    }).join('');
+
     const params = {
-      products: cart.map(p => p.name).join('، '),
-      mode: mode === 'rent' ? 'كراء' : 'شراء',
+      customer_name: document.getElementById('customerName').value,
+      customer_phone: document.getElementById('customerPhone').value,
+      customer_email: hasEmail.checked ? document.getElementById('customerEmail').value : 'غير مدخل',
       wilaya: wilayaSelect.value,
-      delivery: delivery,
-      total: productsTotal + delivery
+      city: document.getElementById('city').value,
+      address: document.getElementById('address').value,
+      payment_method: paymentSelect.value,
+      order_type: mode === 'rent' ? 'كراء' : 'شراء',
+      notes: document.getElementById('orderNotes').value || 'لا يوجد',
+      products_html: productsHtml,
+      subtotal: productsTotal + ' دج',
+      delivery: delivery + ' دج',
+      total: (productsTotal + delivery) + ' دج'
     };
     if (siteData.emailjs && siteData.emailjs.publicKey && siteData.emailjs.serviceId && siteData.emailjs.templateId && window.emailjs) {
       emailjs.send(siteData.emailjs.serviceId, siteData.emailjs.templateId, params)
