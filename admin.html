@@ -36,6 +36,7 @@
   <div class="admin-tabs" id="adminTabs">
     <button class="tab-btn active" data-tab="colors">الألوان</button>
     <button class="tab-btn" data-tab="texts">النصوص</button>
+    <button class="tab-btn" data-tab="creator">التعريف الشخصي</button>
     <button class="tab-btn" data-tab="products">المنتجات</button>
     <button class="tab-btn" data-tab="categories">الكاتيغوريس</button>
     <button class="tab-btn" data-tab="wilayas">الولايات والتوصيل</button>
@@ -43,6 +44,7 @@
     <button class="tab-btn" data-tab="account">معلومات الدخول</button>
     <button class="tab-btn" data-tab="emailjs">EmailJS</button>
     <button class="tab-btn" data-tab="checkout-texts">نصوص الدفع</button>
+    <button class="tab-btn" data-tab="templates">قوالب التصميم</button>
   </div>
 
   <main class="admin-content">
@@ -72,9 +74,32 @@
       <button class="save-btn" id="saveTexts">حفظ النصوص</button>
     </section>
 
+    <!-- التعريف الشخصي والصورة (جديد) -->
+    <section class="admin-panel" id="panel-creator">
+      <h3>قسم التعريف الشخصي (فوق المنتجات)</h3>
+      <label>صورة التعريف</label>
+      <div class="img-upload-box" id="creatorImgBox">
+        <span id="creatorImgText">اختر صورة أو اسحبها هنا</span>
+        <input type="file" id="creatorImgFile" accept="image/*">
+      </div>
+      <div id="creatorImgPreview" style="margin-top:10px;"></div>
+      
+      <label>النص التعريفي</label>
+      <textarea id="creatorBioText" rows="4" placeholder="اكتب ما شئت هنا كتعريف عنك..."></textarea>
+      <button class="save-btn" id="saveCreator">حفظ التعريف الشخصي</button>
+    </section>
+
     <!-- المنتجات -->
     <section class="admin-panel" id="panel-products">
-      <h3>المنتجات</h3>
+      <h3>المنتجات وشكل البطاقات (Cards)</h3>
+      <div style="margin-bottom: 20px; padding: 12px; background: var(--blush); border-radius: 8px;">
+        <label>تعديل تصميم بطاقات المنتجات (CSS مخصص للبطاقة)</label>
+        <select id="cardStylePreset" style="margin-top:6px;">
+          <option value="default">الافتراضي (عصري مع ظل)</option>
+          <option value="classic">كلاسيكي (إطار ذهبي خفيف)</option>
+          <option value="minimal">مينيمال (بدون حدود بارزة)</option>
+        </select>
+      </div>
       <div id="productList"></div>
       <button class="add-btn" id="addProduct">+ إضافة منتج</button>
       <button class="save-btn" id="saveProducts">حفظ المنتجات</button>
@@ -137,7 +162,7 @@
       <button class="save-btn" id="saveEmailjs">حفظ إعدادات EmailJS</button>
     </section>
 
-    <!-- نصوص صفحة الدفع (جديد) -->
+    <!-- نصوص صفحة الدفع -->
     <section class="admin-panel" id="panel-checkout-texts">
       <h3>نصوص صفحة الدفع</h3>
       <label>عنوان صفحة الدفع</label>
@@ -149,6 +174,17 @@
       <label>نص نجاح الطلب</label>
       <input type="text" id="checkoutSuccessMessage">
       <button class="save-btn" id="saveCheckoutTexts">حفظ نصوص الدفع</button>
+    </section>
+
+    <!-- حفظ القوالب الجاهزة (جديد) -->
+    <section class="admin-panel" id="panel-templates">
+      <h3>حفظ واسترجاع القوالب الجاهزة</h3>
+      <p class="hint">احفظ شكلك الحالي للألوان والتصميم وانتقل بين القوالب متى شئت.</p>
+      <div class="add-row">
+        <input type="text" id="templateNameInput" placeholder="اسم القالب الجديد (مثلا: قالب شتاء 2026)">
+        <button class="add-btn" id="saveCurrentTemplateBtn">حفظ القالب الحالي</button>
+      </div>
+      <div id="savedTemplatesList" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;"></div>
     </section>
 
   </main>

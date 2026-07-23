@@ -8,11 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<!-- ============================================================
-     مكان أكواد EmailJS: لا تحتاج تكتب أي كود هنا يدوياً.
-     Public Key / Service ID / Template ID تتحط من صفحة الأدمن
-     (تبويب "EmailJS") وتتحفظ في Firebase وتنجر تلقائياً من script.js
-     ============================================================ -->
 </head>
 <body>
 
@@ -27,7 +22,7 @@
   <div class="logo">My Dress</div>
   <nav class="nav">
     <a href="#collection">الكولكشن</a>
-    <a href="admin.html" target="_blank">Admin</a>
+    <a href="admin.html">Admin</a>
     <a href="#about">من نحن</a>
   </nav>
 </header>
@@ -42,6 +37,14 @@
   </button>
 </section>
 
+<!-- قسم التعريف الشخصي (جديد) -->
+<section class="about-creator" id="aboutCreatorSection" style="padding: 40px 6%; text-align: center; background: var(--blush);">
+  <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+    <img id="creatorImg" src="" alt="صورة التعريف" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); display: none;">
+    <p id="creatorBio" style="font-size: 1.1rem; color: var(--ink); line-height: 1.8; white-space: pre-line;"></p>
+  </div>
+</section>
+
 <section class="categories" id="collection">
   <h2>الكاتيغوري</h2>
   <div class="dropdown" id="catDropdown">
@@ -54,7 +57,7 @@
 </section>
 
 <section class="products">
-  <h2>المنتجات</h2>
+  <h2 id="productsHeading">المنتجات</h2>
   <div class="prod-grid" id="prodGrid"></div>
 </section>
 
@@ -99,7 +102,7 @@
 <div class="checkout-page" id="checkoutPage">
   <div class="checkout-wrap">
     <button class="back-btn" id="closeCheckout">→ رجوع</button>
-    <h2>إتمام الدفع</h2>
+    <h2 id="checkoutTitleText">إتمام الدفع</h2>
     <div class="checkout-content">
 
       <form id="checkoutForm" class="checkout-form">
@@ -147,11 +150,11 @@
         <label>ملاحظات (اختياري)</label>
         <textarea rows="2" id="orderNotes"></textarea>
 
-        <button type="submit" class="confirm-btn">تأكيد الطلب</button>
+        <button type="submit" class="confirm-btn" id="confirmBtnText">تأكيد الطلب</button>
       </form>
 
       <aside class="invoice" id="invoice">
-        <h3>الفاتورة</h3>
+        <h3 id="invoiceTitleText">الفاتورة</h3>
         <div class="invoice-lines" id="invoiceLines"></div>
         <div class="invoice-row"><span>نوع الطلب</span><span id="invMode">كراء</span></div>
         <div class="invoice-row"><span>سعر المنتجات</span><span id="invProducts">0 دج</span></div>

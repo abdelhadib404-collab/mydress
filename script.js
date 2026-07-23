@@ -2,10 +2,32 @@
   const siteData = await loadData();
   applyColors(siteData.colors);
 
-  /* ------ النصوص ------ */
+  /* ------ النصوص والتعريف الشخصي ------ */
   document.getElementById('heroTitle').textContent = siteData.texts.heroTitle;
   document.getElementById('heroSubtitle').textContent = siteData.texts.heroSubtitle;
   document.getElementById('footerText').textContent = siteData.texts.footerText;
+
+  if (siteData.creator) {
+    const creatorBioEl = document.getElementById('creatorBio');
+    const creatorImgEl = document.getElementById('creatorImg');
+    if (siteData.creator.bio) creatorBioEl.textContent = siteData.creator.bio;
+    if (siteData.creator.img) {
+      creatorImgEl.src = siteData.creator.img;
+      creatorImgEl.style.display = 'block';
+    }
+  }
+
+  /* ------ تطبيق شكل الكاردز المختار ------ */
+  if (siteData.cardStyle) {
+    document.body.classList.add('card-style-' + siteData.cardStyle);
+  }
+
+  /* ------ نصوص صفحة الدفع إن وجدت ------ */
+  if (siteData.checkoutTexts) {
+    if (siteData.checkoutTexts.title) document.getElementById('checkoutTitleText').textContent = siteData.checkoutTexts.title;
+    if (siteData.checkoutTexts.confirm) document.getElementById('confirmBtnText').textContent = siteData.checkoutTexts.confirm;
+    if (siteData.checkoutTexts.invoice) document.getElementById('invoiceTitleText').textContent = siteData.checkoutTexts.invoice;
+  }
 
   /* ------ زر السهم في الهيرو ------ */
   document.getElementById('scrollBtn').addEventListener('click', () => {
@@ -236,7 +258,6 @@
     const mode = getMode();
     const delivery = getDeliveryPrice();
 
-    // تجميع المنتجات المكررة مع حساب الكمية
     const grouped = {};
     cart.forEach(p => {
       const price = (mode === 'rent' && p.rentPrice > 0) ? p.rentPrice : p.buyPrice;
@@ -247,7 +268,6 @@
     const productsArr = Object.values(grouped).map(g => ({ ...g, lineTotal: g.qty * g.price }));
     const productsTotal = productsArr.reduce((s, g) => s + g.lineTotal, 0);
 
-    // EmailJS لا يقبل مصفوفات/كائنات كمتغيرات، فنبني نص HTML جاهز هنا
     const productsHtml = productsArr.map(g => `
       <tr>
         <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;color:#2b2320;">${g.name}</td>
@@ -271,12 +291,13 @@
       delivery: delivery + ' دج',
       total: (productsTotal + delivery) + ' دج'
     };
+    const successMsg = (siteData.checkoutTexts && siteData.checkoutTexts.success) ? siteData.checkoutTexts.success : 'تم استلام طلبك بنجاح ✅';
     if (siteData.emailjs && siteData.emailjs.publicKey && siteData.emailjs.serviceId && siteData.emailjs.templateId && window.emailjs) {
       emailjs.send(siteData.emailjs.serviceId, siteData.emailjs.templateId, params)
-        .then(() => alert('تم استلام طلبك بنجاح ✅'))
+        .then(() => alert(successMsg))
         .catch(() => alert('تم تسجيل الطلب، لكن حدث خطأ أثناء إرسال البريد.'));
     } else {
-      alert('تم استلام طلبك بنجاح ✅');
+      alert(successMsg);
     }
     cart = [];
     renderCart();

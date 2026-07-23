@@ -36,12 +36,15 @@
   function fillAllPanels() {
     fillColors();
     fillTexts();
+    fillCreator();
     fillProducts();
     fillCategories();
     fillWilayas();
     fillPayments();
     fillAccount();
     fillEmailjs();
+    fillCheckoutTexts();
+    fillTemplates();
   }
 
   /* ================= الألوان ================= */
@@ -81,15 +84,51 @@
     alert('تم حفظ النصوص ✅');
   });
 
-  /* ================= المنتجات + رفع الصور من الجهاز ================= */
+  /* ================= التعريف الشخصي (جديد) ================= */
+  function fillCreator() {
+    if (!siteData.creator) siteData.creator = { bio: '', img: '' };
+    document.getElementById('creatorBioText').value = siteData.creator.bio || '';
+    const prev = document.getElementById('creatorImgPreview');
+    prev.innerHTML = siteData.creator.img ? `<img src="${siteData.creator.img}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : '';
+  }
+
+  let tempCreatorImg = '';
+  document.getElementById('creatorImgFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        tempCreatorImg = ev.target.result;
+        document.getElementById('creatorImgPreview').innerHTML = `<img src="${tempCreatorImg}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('saveCreator').addEventListener('click', async () => {
+    if (!siteData.creator) siteData.creator = {};
+    siteData.creator.bio = document.getElementById('creatorBioText').value;
+    if (tempCreatorImg) siteData.creator.img = tempCreatorImg;
+    await saveData(siteData);
+    alert('تم حفظ التعريف الشخصي ✅');
+  });
+
+  /* ================= المنتجات + تصميم الكاردز ================= */
   const productList = document.getElementById('productList');
 
   function fillProducts() {
     productList.innerHTML = '';
     siteData.products.forEach(p => productList.appendChild(buildProductRow(p)));
+    if (siteData.cardStyle) {
+      document.getElementById('cardStylePreset').value = siteData.cardStyle;
+    }
   }
 
-  // يبني صف صورة واحدة داخل معرض الصور (مع زر حذف)
+  document.getElementById('cardStylePreset').addEventListener('change', async (e) => {
+    siteData.cardStyle = e.target.value;
+    await saveData(siteData);
+  });
+
   function buildImageThumb(gallery, src) {
     const thumb = document.createElement('div');
     thumb.className = 'img-thumb';
@@ -107,12 +146,7 @@
     const imgBox = document.createElement('div');
     imgBox.className = 'img-upload-box';
     imgBox.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="17 8 12 3 7 8"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
-      </svg>
-      <span>اسحب الصور أو اضغط للاختيار (يمكن اختيار أكثر من صورة)</span>
+      <span>اسحب الصور أو اضغط للاختيار</span>
       <input type="file" accept="image/*" class="f-img-file" multiple>
       <div class="img-gallery"></div>
     `;
@@ -303,6 +337,76 @@
     };
     await saveData(siteData);
     alert('تم حفظ إعدادات EmailJS ✅');
+  });
+
+  /* ================= نصوص صفحة الدفع ================= */
+  function fillCheckoutTexts() {
+    if (!siteData.checkoutTexts) siteData.checkoutTexts = {};
+    document.getElementById('checkoutTitle').value = siteData.checkoutTexts.title || '';
+    document.getElementById('checkoutConfirmText').value = siteData.checkoutTexts.confirm || '';
+    document.getElementById('checkoutInvoiceTitle').value = siteData.checkoutTexts.invoice || '';
+    document.getElementById('checkoutSuccessMessage').value = siteData.checkoutTexts.success || '';
+  }
+  document.getElementById('saveCheckoutTexts').addEventListener('click', async () => {
+    siteData.checkoutTexts = {
+      title: document.getElementById('checkoutTitle').value,
+      confirm: document.getElementById('checkoutConfirmText').value,
+      invoice: document.getElementById('checkoutInvoiceTitle').value,
+      success: document.getElementById('checkoutSuccessMessage').value
+    };
+    await saveData(siteData);
+    alert('تم حفظ نصوص الدفع ✅');
+  });
+
+  /* ================= القوالب الجاهزة (جديد) ================= */
+  function fillTemplates() {
+    if (!siteData.templates) siteData.templates = [];
+    const listEl = document.getElementById('savedTemplatesList');
+    listEl.innerHTML = '';
+    if (siteData.templates.length === 0) {
+      listEl.innerHTML = '<p class="hint">لا توجد قوالب محفوظة حالياً.</p>';
+      return;
+    }
+    siteData.templates.forEach((t, index) => {
+      listEl.innerHTML += `
+        <div class="wilaya-row">
+          <span>${t.name}</span>
+          <button class="add-btn" data-apply="${index}" style="padding:4px 10px;margin:0;">تفعيل القالب</button>
+          <button data-del-template="${index}">✕</button>
+        </div>`;
+    });
+  }
+
+  document.getElementById('saveCurrentTemplateBtn').addEventListener('click', async () => {
+    const name = document.getElementById('templateNameInput').value.trim();
+    if (!name) return alert('الرجاء كتابة اسم القالب');
+    if (!siteData.templates) siteData.templates = [];
+    siteData.templates.push({
+      name: name,
+      colors: JSON.parse(JSON.stringify(siteData.colors)),
+      cardStyle: siteData.cardStyle
+    });
+    await saveData(siteData);
+    fillTemplates();
+    document.getElementById('templateNameInput').value = '';
+    alert('تم حفظ القالب بنجاح ✅');
+  });
+
+  document.getElementById('savedTemplatesList').addEventListener('click', async (e) => {
+    if (e.target.dataset.apply !== undefined) {
+      const idx = e.target.dataset.apply;
+      const t = siteData.templates[idx];
+      siteData.colors = JSON.parse(JSON.stringify(t.colors));
+      siteData.cardStyle = t.cardStyle;
+      await saveData(siteData);
+      applyColors(siteData.colors);
+      alert(`تم تطبيق القالب "${t.name}" بنجاح ✅`);
+    } else if (e.target.dataset.delTemplate !== undefined) {
+      const idx = e.target.dataset.delTemplate;
+      siteData.templates.splice(idx, 1);
+      await saveData(siteData);
+      fillTemplates();
+    }
   });
 
 })();
