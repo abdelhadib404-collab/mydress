@@ -235,15 +235,17 @@
     e.preventDefault();
     const mode = getMode();
     const delivery = getDeliveryPrice();
-    const productsTotal = cart.reduce((sum, p) => sum + ((mode === 'rent' && p.rentPrice > 0) ? p.rentPrice : p.buyPrice), 0);
 
-    const productsHtml = cart.map(p => {
+    // تجميع المنتجات المكررة مع حساب الكمية
+    const grouped = {};
+    cart.forEach(p => {
       const price = (mode === 'rent' && p.rentPrice > 0) ? p.rentPrice : p.buyPrice;
-      return `<tr>
-        <td style="padding:10px 0;border-bottom:1px solid #ecdfd5;color:#2b2320">${p.name}</td>
-        <td style="padding:10px 0;border-bottom:1px solid #ecdfd5;color:#6b1e2f;font-weight:700;text-align:left">${price} دج</td>
-      </tr>`;
-    }).join('');
+      const key = p.id + '_' + price;
+      if (!grouped[key]) grouped[key] = { name: p.name, qty: 0, price, type: mode === 'rent' ? 'كراء' : 'شراء' };
+      grouped[key].qty++;
+    });
+    const productsArr = Object.values(grouped).map(g => ({ ...g, lineTotal: g.qty * g.price }));
+    const productsTotal = productsArr.reduce((s, g) => s + g.lineTotal, 0);
 
     const params = {
       customer_name: document.getElementById('customerName').value,
@@ -255,7 +257,7 @@
       payment_method: paymentSelect.value,
       order_type: mode === 'rent' ? 'كراء' : 'شراء',
       notes: document.getElementById('orderNotes').value || 'لا يوجد',
-      products_html: productsHtml,
+      products: productsArr,
       subtotal: productsTotal + ' دج',
       delivery: delivery + ' دج',
       total: (productsTotal + delivery) + ' دج'
