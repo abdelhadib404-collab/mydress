@@ -1,6 +1,6 @@
 // ⚠️ مهم جدا: بدّل هذا الرابط برابط Firebase الخاص بيك (شوف خطوات الإعداد)
 // لازم يكون شكل الرابط هكذا وينتهي بـ /mydress.json
-const FIREBASE_URL = 'https://mydressshop-fd016-default-rtdb.firebaseio.com//mydress.json';
+const FIREBASE_URL = 'https://PASTE-YOUR-PROJECT-default-rtdb.firebaseio.com/mydress.json';
 /* ============ بيانات الموقع - النسخة السحابية (Firebase) ============ */
 
 const DEFAULT_DATA = {
