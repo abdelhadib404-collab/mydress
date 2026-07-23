@@ -63,14 +63,7 @@
           <td style="padding:6px 0;text-align:center;">النوع</td>
           <td style="padding:6px 0;text-align:left;">السعر</td>
         </tr>
-        {{#each products}}
-        <tr>
-          <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;color:#2b2320;">{{this.name}}</td>
-          <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;text-align:center;">{{this.qty}}</td>
-          <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;text-align:center;">{{this.type}}</td>
-          <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;color:#6b1e2f;font-weight:700;text-align:left;">{{this.lineTotal}} دج</td>
-        </tr>
-        {{/each}}
+        {{{products_html}}}
       </table>
 
       <!-- الفاتورة -->

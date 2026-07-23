@@ -247,6 +247,15 @@
     const productsArr = Object.values(grouped).map(g => ({ ...g, lineTotal: g.qty * g.price }));
     const productsTotal = productsArr.reduce((s, g) => s + g.lineTotal, 0);
 
+    // EmailJS لا يقبل مصفوفات/كائنات كمتغيرات، فنبني نص HTML جاهز هنا
+    const productsHtml = productsArr.map(g => `
+      <tr>
+        <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;color:#2b2320;">${g.name}</td>
+        <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;text-align:center;">${g.qty}</td>
+        <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;text-align:center;">${g.type}</td>
+        <td style="padding:8px 0;border-bottom:1px solid #ecdfd5;color:#6b1e2f;font-weight:700;text-align:left;">${g.lineTotal} دج</td>
+      </tr>`).join('');
+
     const params = {
       customer_name: document.getElementById('customerName').value,
       customer_phone: document.getElementById('customerPhone').value,
@@ -257,7 +266,7 @@
       payment_method: paymentSelect.value,
       order_type: mode === 'rent' ? 'كراء' : 'شراء',
       notes: document.getElementById('orderNotes').value || 'لا يوجد',
-      products: productsArr,
+      products_html: productsHtml,
       subtotal: productsTotal + ' دج',
       delivery: delivery + ' دج',
       total: (productsTotal + delivery) + ' دج'
