@@ -89,10 +89,20 @@
     siteData.products.forEach(p => productList.appendChild(buildProductRow(p)));
   }
 
+  // يبني صف صورة واحدة داخل معرض الصور (مع زر حذف)
+  function buildImageThumb(gallery, src) {
+    const thumb = document.createElement('div');
+    thumb.className = 'img-thumb';
+    thumb.innerHTML = `<img src="${src}"><button type="button" class="thumb-remove">✕</button>`;
+    thumb.querySelector('.thumb-remove').addEventListener('click', () => thumb.remove());
+    gallery.appendChild(thumb);
+  }
+
   function buildProductRow(p) {
     const div = document.createElement('div');
     div.className = 'product-row';
     div.dataset.id = p.id;
+    const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
 
     const imgBox = document.createElement('div');
     imgBox.className = 'img-upload-box';
@@ -102,37 +112,27 @@
         <polyline points="17 8 12 3 7 8"/>
         <line x1="12" y1="3" x2="12" y2="15"/>
       </svg>
-      <span>اسحب الصورة أو اضغط للاختيار</span>
-      <input type="file" accept="image/*" class="f-img-file">
+      <span>اسحب الصور أو اضغط للاختيار (يمكن اختيار أكثر من صورة)</span>
+      <input type="file" accept="image/*" class="f-img-file" multiple>
+      <div class="img-gallery"></div>
     `;
-    
-    if (p.img) {
-      const preview = document.createElement('img');
-      preview.src = p.img;
-      preview.className = 'preview';
-      imgBox.appendChild(preview);
-    }
+
+    const gallery = imgBox.querySelector('.img-gallery');
+    images.forEach(src => buildImageThumb(gallery, src));
 
     imgBox.querySelector('.f-img-file').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        const old = imgBox.querySelector('.preview');
-        if (old) old.remove();
-        const pr = document.createElement('img');
-        pr.src = ev.target.result;
-        pr.className = 'preview';
-        imgBox.appendChild(pr);
-        const hidden = div.querySelector('.f-img-hidden');
-        if (hidden) hidden.value = ev.target.result;
-      };
-      reader.readAsDataURL(file);
+      const files = Array.from(e.target.files || []);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (ev) => buildImageThumb(gallery, ev.target.result);
+        reader.readAsDataURL(file);
+      });
+      this.value = '';
     });
 
     div.innerHTML = `
       <button class="remove-row" data-remove="${p.id}">✕</button>
-      <div class="full"><label>صورة المنتج</label></div>
+      <div class="full"><label>صور المنتج</label></div>
       <div class="full"><label>اسم المنتج</label><input type="text" class="f-name" value="${p.name}"></div>
       <div><label>الكاتيغوري</label>
         <select class="f-cat">${siteData.categories.map(c => `<option ${c === p.category ? 'selected' : ''}>${c}</option>`).join('')}</select>
@@ -140,7 +140,6 @@
       <div><label>سعر الكراء (0 = غير متوفر)</label><input type="number" class="f-rent" value="${p.rentPrice}"></div>
       <div><label>سعر الشراء</label><input type="number" class="f-buy" value="${p.buyPrice}"></div>
       <div class="full"><label>الوصف</label><textarea class="f-desc" rows="2">${p.desc}</textarea></div>
-      <input type="hidden" class="f-img-hidden" value="${p.img}">
     `;
 
     const labelDiv = div.querySelector('.full');
@@ -149,7 +148,7 @@
   }
 
   document.getElementById('addProduct').addEventListener('click', () => {
-    const newP = { id: Date.now(), name: 'منتج جديد', img: '', category: siteData.categories[0] || '', rentPrice: 0, buyPrice: 0, desc: '' };
+    const newP = { id: Date.now(), name: 'منتج جديد', images: [], category: siteData.categories[0] || '', rentPrice: 0, buyPrice: 0, desc: '' };
     siteData.products.push(newP);
     productList.appendChild(buildProductRow(newP));
   });
@@ -166,15 +165,14 @@
     const rows = productList.querySelectorAll('.product-row');
     const updated = [];
     rows.forEach(row => {
-      const preview = row.querySelector('.preview');
-      const hidden = row.querySelector('.f-img-hidden');
+      const imgs = Array.from(row.querySelectorAll('.img-gallery img')).map(im => im.src);
       updated.push({
         id: Number(row.dataset.id),
         name: row.querySelector('.f-name').value,
         category: row.querySelector('.f-cat').value,
         rentPrice: Number(row.querySelector('.f-rent').value) || 0,
         buyPrice: Number(row.querySelector('.f-buy').value) || 0,
-        img: (preview && preview.src) ? preview.src : (hidden ? hidden.value : ''),
+        images: imgs,
         desc: row.querySelector('.f-desc').value
       });
     });

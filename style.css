@@ -119,6 +119,14 @@ h1,h2,h3{font-family:'Amiri',serif}
 }
 .product-modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
 .product-modal img{width:100%;max-width:280px;height:320px;object-fit:cover}
+.modal-thumbs{
+  display:none;gap:8px;padding:10px 22px 0;flex-wrap:wrap;width:100%;
+}
+.modal-thumbs img{
+  width:56px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;
+  border:2px solid var(--blush);transition:border-color .2s;
+}
+.modal-thumbs img:hover{border-color:var(--gold)}
 .modal-info{padding:22px;text-align:right;flex:1;min-width:220px;position:relative}
 .modal-info h3{color:var(--wine);margin-bottom:10px}
 .modal-info p{color:#5a4d45;line-height:1.7;margin-bottom:16px}
@@ -216,6 +224,22 @@ h1,h2,h3{font-family:'Amiri',serif}
   .product-modal img{max-width:100%;height:220px}
 }
 
+/* ========== الأدمن على الهاتف ========== */
+@media(max-width:700px){
+  .admin-header{flex-direction:column;gap:10px;padding:14px 5%;text-align:center}
+  .admin-link{margin-inline-start:8px;padding:6px 10px;font-size:.85rem}
+  .admin-tabs{padding:12px 4%;gap:6px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .tab-btn{flex:0 0 auto;font-size:.82rem;padding:8px 12px}
+  .admin-content{padding:16px 4% 40px}
+  .admin-panel{padding:16px}
+  .product-row{grid-template-columns:1fr}
+  .color-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .wilaya-row{flex-wrap:wrap}
+  .wilaya-row input{width:90px}
+  .add-row{flex-direction:column}
+  .add-row input{width:100%}
+}
+
 /* ============================================= */
 /* ================ ADMIN PAGE ================= */
 /* ============================================= */
@@ -271,17 +295,21 @@ h1,h2,h3{font-family:'Amiri',serif}
 .color-item{display:flex;flex-direction:column;gap:6px}
 .color-item input{height:42px;padding:2px;cursor:pointer}
 
-/* ========== Product rows in admin ========== */
+/* ========== Product rows in admin (شكل جديد) ========== */
 .product-row{
-  border:1px solid var(--blush);border-radius:8px;padding:16px;margin-bottom:14px;
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;
+  border:1px solid var(--blush);border-radius:14px;padding:18px;margin-bottom:18px;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative;
+  background:#fff;box-shadow:0 6px 16px rgba(107,30,47,.06);transition:box-shadow .2s;
 }
+.product-row:hover{box-shadow:0 10px 24px rgba(107,30,47,.12)}
 .product-row .full{grid-column:1/-1}
 .product-row .remove-row{
-  position:absolute;top:10px;left:10px;background:none;border:none;color:#b23;cursor:pointer;font-size:1.1rem;
+  position:absolute;top:10px;left:10px;background:#fff;border:1px solid #f0d0d0;color:#b23;
+  cursor:pointer;font-size:1rem;width:28px;height:28px;border-radius:50%;line-height:1;
 }
+.product-row .remove-row:hover{background:#b23;color:#fff;border-color:#b23}
 
-/* ========== Image upload box in admin (new) ========== */
+/* ========== Image upload box in admin (يدعم عدة صور) ========== */
 .img-upload-box{
   width:100%;min-height:120px;border:2px dashed var(--wine);border-radius:8px;
   display:flex;align-items:center;justify-content:center;flex-direction:column;
@@ -289,12 +317,18 @@ h1,h2,h3{font-family:'Amiri',serif}
 }
 .img-upload-box:hover{background:var(--blush);border-color:var(--gold)}
 .img-upload-box svg{width:36px;height:36px;color:var(--wine);margin-bottom:6px}
-.img-upload-box span{color:var(--wine);font-weight:500;font-size:.85rem}
-.img-upload-box .preview{
-  max-width:100%;max-height:100px;border-radius:6px;margin-top:6px;
-}
+.img-upload-box span{color:var(--wine);font-weight:500;font-size:.85rem;text-align:center}
 .img-upload-box input[type="file"]{
   position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.img-gallery{
+  width:100%;display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;position:relative;z-index:1;
+}
+.img-thumb{position:relative;width:70px;height:70px}
+.img-thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid var(--blush)}
+.thumb-remove{
+  position:absolute;top:-6px;left:-6px;width:20px;height:20px;border-radius:50%;
+  background:#b23;color:#fff;border:none;cursor:pointer;font-size:.7rem;line-height:1;z-index:2;
 }
 
 /* ========== Tags (categories / payments) ========== */

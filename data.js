@@ -1,6 +1,6 @@
 // ⚠️ مهم جدا: بدّل هذا الرابط برابط Firebase الخاص بيك (شوف خطوات الإعداد)
 // لازم يكون شكل الرابط هكذا وينتهي بـ /mydress.json
-const FIREBASE_URL = 'https://mydressshop-fd016-default-rtdb.firebaseio.com/mydress.json';
+const FIREBASE_URL = 'https://PASTE-YOUR-PROJECT-default-rtdb.firebaseio.com/mydress.json';
 /* ============ بيانات الموقع - النسخة السحابية (Firebase) ============ */
 
 const DEFAULT_DATA = {
@@ -13,10 +13,10 @@ const DEFAULT_DATA = {
   },
   categories: ['أعراس', 'سهرة', 'كاجوال', 'حفلات'],
   products: [
-    { id: 1, name: 'فستان زفاف أبيض', img: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=500', category: 'أعراس', rentPrice: 15000, buyPrice: 60000, desc: 'فستان زفاف أنيق بتصميم كلاسيكي' },
-    { id: 2, name: 'فستان سهرة أحمر', img: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=500', category: 'سهرة', rentPrice: 8000, buyPrice: 25000, desc: 'فستان سهرة بلون أحمر جذاب' },
-    { id: 3, name: 'فستان كاجوال', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500', category: 'كاجوال', rentPrice: 0, buyPrice: 3500, desc: 'فستان يومي مريح وبسيط' },
-    { id: 4, name: 'فستان حفلة ذهبي', img: 'https://images.unsplash.com/photo-1571908599407-cdb918ed83bf?w=500', category: 'حفلات', rentPrice: 9000, buyPrice: 30000, desc: 'فستان لامع بلون ذهبي' }
+    { id: 1, name: 'فستان زفاف أبيض', images: ['https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=500'], category: 'أعراس', rentPrice: 15000, buyPrice: 60000, desc: 'فستان زفاف أنيق بتصميم كلاسيكي' },
+    { id: 2, name: 'فستان سهرة أحمر', images: ['https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=500'], category: 'سهرة', rentPrice: 8000, buyPrice: 25000, desc: 'فستان سهرة بلون أحمر جذاب' },
+    { id: 3, name: 'فستان كاجوال', images: ['https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500'], category: 'كاجوال', rentPrice: 0, buyPrice: 3500, desc: 'فستان يومي مريح وبسيط' },
+    { id: 4, name: 'فستان حفلة ذهبي', images: ['https://images.unsplash.com/photo-1571908599407-cdb918ed83bf?w=500'], category: 'حفلات', rentPrice: 9000, buyPrice: 30000, desc: 'فستان لامع بلون ذهبي' }
   ],
   wilayas: [
     {name:'أدرار',delivery:700},{name:'الشلف',delivery:700},{name:'الأغواط',delivery:700},{name:'أم البواقي',delivery:700},
@@ -39,12 +39,30 @@ const DEFAULT_DATA = {
   emailjs: { publicKey: '', serviceId: '', templateId: '' }
 };
 
+// يحول أي منتج (قديم بصورة واحدة img أو جديد بمصفوفة images) لشكل موحد فيه images[]
+function normalizeProducts(data) {
+  if (data && Array.isArray(data.products)) {
+    data.products.forEach(p => {
+      if (!Array.isArray(p.images) || p.images.length === 0) {
+        p.images = p.img ? [p.img] : [];
+      }
+    });
+  }
+  return data;
+}
+
+// أول صورة للمنتج (تستعمل في الكارد وسلة التسوق)
+function getMainImage(p) {
+  return (p.images && p.images[0]) || p.img || '';
+}
+
 function loadData() {
   return new Promise((resolve) => {
     fetch(FIREBASE_URL)
       .then(r => r.json())
       .then(data => {
         if (data && data.auth) {
+          data = normalizeProducts(data);
           localStorage.setItem('myDressData_cache', JSON.stringify(data));
           resolve(data);
           return;
@@ -54,7 +72,7 @@ function loadData() {
       .catch(() => {
         const raw = localStorage.getItem('myDressData_cache');
         if (raw) {
-          try { resolve(JSON.parse(raw)); return; } catch(e){}
+          try { resolve(normalizeProducts(JSON.parse(raw))); return; } catch(e){}
         }
         const fresh = JSON.parse(JSON.stringify(DEFAULT_DATA));
         resolve(fresh);

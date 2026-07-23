@@ -45,7 +45,7 @@
       grid.innerHTML += `
         <div class="prod-card" data-id="${p.id}">
           <div class="img-wrap">
-            <img src="${p.img}" alt="${p.name}">
+            <img src="${getMainImage(p)}" alt="${p.name}">
             <div class="hover-veil"><span>عرض التفاصيل</span></div>
           </div>
           <div class="prod-info">
@@ -67,11 +67,27 @@
     const p = siteData.products.find(x => x.id == id);
     if (!p) return;
     currentProduct = p;
-    document.getElementById('modalImg').src = p.img;
+    const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
+    document.getElementById('modalImg').src = images[0] || '';
     document.getElementById('modalName').textContent = p.name;
     document.getElementById('modalDesc').textContent = p.desc;
     document.getElementById('modalRent').textContent = p.rentPrice > 0 ? `كراء: ${p.rentPrice} دج` : 'غير متوفر للكراء';
     document.getElementById('modalBuy').textContent = `شراء: ${p.buyPrice} دج`;
+
+    const thumbsEl = document.getElementById('modalThumbs');
+    thumbsEl.innerHTML = '';
+    if (images.length > 1) {
+      thumbsEl.style.display = 'flex';
+      images.forEach(src => {
+        const t = document.createElement('img');
+        t.src = src;
+        t.addEventListener('click', () => { document.getElementById('modalImg').src = src; });
+        thumbsEl.appendChild(t);
+      });
+    } else {
+      thumbsEl.style.display = 'none';
+    }
+
     overlay.classList.add('show');
     productModal.classList.add('open');
   }
@@ -135,7 +151,7 @@
     cart.forEach((p, i) => {
       cartItemsEl.innerHTML += `
         <div class="cart-item">
-          <img src="${p.img}" alt="${p.name}">
+          <img src="${getMainImage(p)}" alt="${p.name}">
           <div class="cart-item-info">
             <h4>${p.name}</h4>
             <span>${priceLabel(p)}</span>
