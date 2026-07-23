@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dress — لوحة التحكم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+<!-- تسجيل الدخول -->
+<div class="login-page" id="loginPage">
+  <form class="login-box" id="loginForm">
+    <h2>تسجيل دخول الأدمن</h2>
+    <label>البريد الإلكتروني</label>
+    <input type="email" id="loginEmail" required>
+    <label>كلمة المرور</label>
+    <input type="password" id="loginPassword" required>
+    <p class="login-error" id="loginError"></p>
+    <button type="submit">دخول</button>
+  </form>
+</div>
+
+<!-- لوحة التحكم -->
+<div class="admin-dashboard" id="adminDashboard" style="display:none">
+  <header class="admin-header">
+    <div class="logo">My Dress — لوحة التحكم</div>
+    <div>
+      <a href="index.html" class="admin-link">عرض الموقع</a>
+      <button id="logoutBtn" class="admin-link logout">خروج</button>
+    </div>
+  </header>
+
+  <div class="admin-tabs" id="adminTabs">
+    <button class="tab-btn active" data-tab="colors">الألوان</button>
+    <button class="tab-btn" data-tab="texts">النصوص</button>
+    <button class="tab-btn" data-tab="products">المنتجات</button>
+    <button class="tab-btn" data-tab="categories">الكاتيغوريس</button>
+    <button class="tab-btn" data-tab="wilayas">الولايات والتوصيل</button>
+    <button class="tab-btn" data-tab="payments">طرق الدفع</button>
+    <button class="tab-btn" data-tab="account">معلومات الدخول</button>
+    <button class="tab-btn" data-tab="emailjs">EmailJS</button>
+    <button class="tab-btn" data-tab="checkout-texts">نصوص الدفع</button>
+  </div>
+
+  <main class="admin-content">
+
+    <!-- الألوان -->
+    <section class="admin-panel active" id="panel-colors">
+      <h3>ألوان الموقع</h3>
+      <div class="color-grid">
+        <div class="color-item"><label>اللون الأساسي (نبيذي)</label><input type="color" id="colorWine"></div>
+        <div class="color-item"><label>لون الخلفية (كريمي)</label><input type="color" id="colorCream"></div>
+        <div class="color-item"><label>اللون الذهبي</label><input type="color" id="colorGold"></div>
+        <div class="color-item"><label>لون النص</label><input type="color" id="colorInk"></div>
+        <div class="color-item"><label>لون فاتح مساعد</label><input type="color" id="colorBlush"></div>
+      </div>
+      <button class="save-btn" id="saveColors">حفظ الألوان</button>
+    </section>
+
+    <!-- النصوص -->
+    <section class="admin-panel" id="panel-texts">
+      <h3>نصوص الصفحة الرئيسية</h3>
+      <label>عنوان الهيرو</label>
+      <input type="text" id="textHeroTitle">
+      <label>وصف الهيرو</label>
+      <input type="text" id="textHeroSubtitle">
+      <label>نص الفوتر</label>
+      <input type="text" id="textFooter">
+      <button class="save-btn" id="saveTexts">حفظ النصوص</button>
+    </section>
+
+    <!-- المنتجات -->
+    <section class="admin-panel" id="panel-products">
+      <h3>المنتجات</h3>
+      <div id="productList"></div>
+      <button class="add-btn" id="addProduct">+ إضافة منتج</button>
+      <button class="save-btn" id="saveProducts">حفظ المنتجات</button>
+    </section>
+
+    <!-- الكاتيغوريس -->
+    <section class="admin-panel" id="panel-categories">
+      <h3>الكاتيغوريس</h3>
+      <div id="categoryList" class="tag-list"></div>
+      <div class="add-row">
+        <input type="text" id="newCategory" placeholder="اسم كاتيغوري جديد">
+        <button class="add-btn" id="addCategory">إضافة</button>
+      </div>
+      <button class="save-btn" id="saveCategories">حفظ الكاتيغوريس</button>
+    </section>
+
+    <!-- الولايات والتوصيل -->
+    <section class="admin-panel" id="panel-wilayas">
+      <h3>الولايات وأسعار التوصيل</h3>
+      <div id="wilayaList" class="wilaya-list"></div>
+      <div class="add-row">
+        <input type="text" id="newWilayaName" placeholder="اسم ولاية جديدة">
+        <input type="number" id="newWilayaPrice" placeholder="سعر التوصيل">
+        <button class="add-btn" id="addWilaya">إضافة</button>
+      </div>
+      <button class="save-btn" id="saveWilayas">حفظ الولايات</button>
+    </section>
+
+    <!-- طرق الدفع -->
+    <section class="admin-panel" id="panel-payments">
+      <h3>طرق الدفع</h3>
+      <div id="paymentList" class="tag-list"></div>
+      <div class="add-row">
+        <input type="text" id="newPayment" placeholder="طريقة دفع جديدة">
+        <button class="add-btn" id="addPayment">إضافة</button>
+      </div>
+      <button class="save-btn" id="savePayments">حفظ طرق الدفع</button>
+    </section>
+
+    <!-- معلومات الدخول -->
+    <section class="admin-panel" id="panel-account">
+      <h3>معلومات تسجيل الدخول</h3>
+      <label>البريد الإلكتروني الجديد</label>
+      <input type="email" id="accountEmail">
+      <label>كلمة المرور الجديدة</label>
+      <input type="password" id="accountPassword">
+      <button class="save-btn" id="saveAccount">حفظ معلومات الدخول</button>
+    </section>
+
+    <!-- EmailJS -->
+    <section class="admin-panel" id="panel-emailjs">
+      <h3>ربط EmailJS لاستقبال الطلبات</h3>
+      <p class="hint">أنشئ حساباً في emailjs.com واملأ المعلومات التالية ليصلك كل طلب عميل عبر بريدك الإلكتروني.</p>
+      <label>Public Key</label>
+      <input type="text" id="emailPublicKey">
+      <label>Service ID</label>
+      <input type="text" id="emailServiceId">
+      <label>Template ID</label>
+      <input type="text" id="emailTemplateId">
+      <button class="save-btn" id="saveEmailjs">حفظ إعدادات EmailJS</button>
+    </section>
+
+    <!-- نصوص صفحة الدفع (جديد) -->
+    <section class="admin-panel" id="panel-checkout-texts">
+      <h3>نصوص صفحة الدفع</h3>
+      <label>عنوان صفحة الدفع</label>
+      <input type="text" id="checkoutTitle">
+      <label>نص زر تأكيد الطلب</label>
+      <input type="text" id="checkoutConfirmText">
+      <label>نص الفاتورة</label>
+      <input type="text" id="checkoutInvoiceTitle">
+      <label>نص نجاح الطلب</label>
+      <input type="text" id="checkoutSuccessMessage">
+      <button class="save-btn" id="saveCheckoutTexts">حفظ نصوص الدفع</button>
+    </section>
+
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

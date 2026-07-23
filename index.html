@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="cart" id="cartBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/>
+      <path d="M2.5 3h2l2.3 11.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H5.5"/>
+    </svg>
+    <span class="cart-count" id="cartCount">0</span>
+  </div>
+  <div class="logo">My Dress</div>
+  <nav class="nav">
+    <a href="#collection">الكولكشن</a>
+    <a href="admin.html" target="_blank">Admin</a>
+    <a href="#about">من نحن</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1 id="heroTitle"></h1>
+  <p id="heroSubtitle"></p>
+  <button class="arrow" id="scrollBtn" aria-label="عرض الكاتيغوريس">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M12 4v16M5 13l7 7 7-7"/>
+    </svg>
+  </button>
+</section>
+
+<section class="categories" id="collection">
+  <h2>الكاتيغوري</h2>
+  <div class="dropdown" id="catDropdown">
+    <button class="dropdown-toggle" id="catToggle">
+      <span>اختر الكاتيغوري</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <ul class="dropdown-list" id="catList"></ul>
+  </div>
+</section>
+
+<section class="products">
+  <h2>المنتجات</h2>
+  <div class="prod-grid" id="prodGrid"></div>
+</section>
+
+<footer class="footer" id="about">
+  <p id="footerText"></p>
+</footer>
+
+<!-- مودال تفاصيل المنتج -->
+<div class="overlay" id="overlay"></div>
+<div class="product-modal" id="productModal">
+  <div class="product-modal-box">
+    <button class="close-x" id="closeModal">✕</button>
+    <img id="modalImg" src="" alt="">
+    <div class="modal-info">
+      <h3 id="modalName"></h3>
+      <p id="modalDesc"></p>
+      <div class="modal-prices">
+        <span id="modalRent"></span>
+        <span id="modalBuy"></span>
+      </div>
+      <button id="modalAddBtn">أضف إلى السلة</button>
+    </div>
+  </div>
+</div>
+
+<!-- سلة التسوق -->
+<aside class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <h3>عربة التسوق</h3>
+    <button id="closeCart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <p class="empty-msg" id="emptyMsg">العربة فارغة حالياً</p>
+  </div>
+  <div class="cart-foot">
+    <button id="checkoutBtn">إتمام الدفع</button>
+  </div>
+</aside>
+
+<!-- صفحة الدفع -->
+<div class="checkout-page" id="checkoutPage">
+  <div class="checkout-wrap">
+    <button class="back-btn" id="closeCheckout">→ رجوع</button>
+    <h2>إتمام الدفع</h2>
+    <div class="checkout-content">
+
+      <form id="checkoutForm" class="checkout-form">
+        <label>الاسم الكامل</label>
+        <input type="text" required>
+
+        <label>رقم الهاتف</label>
+        <input type="tel" required>
+
+        <div class="toggle-row">
+          <span>هل لديك بريد إلكتروني؟</span>
+          <label class="switch">
+            <input type="checkbox" id="hasEmail">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="collapsible" id="emailField">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="customerEmail">
+        </div>
+
+        <label>كراء أم شراء؟</label>
+        <div class="mode-toggle">
+          <label><input type="radio" name="mode" value="rent" checked> كراء</label>
+          <label><input type="radio" name="mode" value="buy"> شراء</label>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label>الولاية</label>
+            <select id="wilaya"></select>
+          </div>
+          <div>
+            <label>المدينة</label>
+            <input type="text">
+          </div>
+        </div>
+
+        <label>العنوان</label>
+        <textarea rows="2"></textarea>
+
+        <label>طريقة الدفع</label>
+        <select id="paymentMethod"></select>
+
+        <button type="submit" class="confirm-btn">تأكيد الطلب</button>
+      </form>
+
+      <aside class="invoice" id="invoice">
+        <h3>الفاتورة</h3>
+        <div class="invoice-lines" id="invoiceLines"></div>
+        <div class="invoice-row"><span>نوع الطلب</span><span id="invMode">كراء</span></div>
+        <div class="invoice-row"><span>سعر المنتجات</span><span id="invProducts">0 دج</span></div>
+        <div class="invoice-row"><span>سعر التوصيل</span><span id="invDelivery">0 دج</span></div>
+        <div class="invoice-row total"><span>الإجمالي</span><span id="invTotal">0 دج</span></div>
+      </aside>
+
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
