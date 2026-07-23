@@ -1,7 +1,7 @@
-// ضع الرابط اللي نسخته من Firebase هنا + اكتب في النهاية /mydress.json
-const FIREBASE_URL = 'https://mydressshop-fd016-default-rtdb.firebaseio.com/mydress.json';
-/* ============ بيانات الموقع - النسخة السحابية ============ */
-const API_BASE = './api/';
+// ⚠️ مهم جدا: بدّل هذا الرابط برابط Firebase الخاص بيك (شوف خطوات الإعداد)
+// لازم يكون شكل الرابط هكذا وينتهي بـ /mydress.json
+const FIREBASE_URL = 'https://PASTE-YOUR-PROJECT-default-rtdb.firebaseio.com/mydress.json';
+/* ============ بيانات الموقع - النسخة السحابية (Firebase) ============ */
 
 const DEFAULT_DATA = {
   auth: { email: 'admin@mydress.com', password: 'admin123' },
@@ -41,7 +41,7 @@ const DEFAULT_DATA = {
 
 function loadData() {
   return new Promise((resolve) => {
-    fetch(API_BASE + 'get-data.php')
+    fetch(FIREBASE_URL)
       .then(r => r.json())
       .then(data => {
         if (data && data.auth) {
@@ -65,14 +65,12 @@ function loadData() {
 function saveData(data) {
   return new Promise((resolve) => {
     localStorage.setItem('myDressData_cache', JSON.stringify(data));
-    const payload = JSON.parse(JSON.stringify(data));
-    payload.__password = data.auth.password;
-    fetch(API_BASE + 'save-data.php', {
-      method: 'POST',
+    fetch(FIREBASE_URL, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(data)
     })
-    .then(() => resolve(true))
+    .then(r => resolve(r.ok))
     .catch(() => resolve(false));
   });
 }
